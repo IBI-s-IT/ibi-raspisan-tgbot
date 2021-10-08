@@ -2,29 +2,34 @@ import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
 import {I18n} from '@grammyjs/i18n';
 import {MenuMiddleware} from 'telegraf-inline-menu';
 import {Telegraf} from 'telegraf';
-import TelegrafSessionLocal from 'telegraf-session-local';
-
-import {fightDragons, danceWithFairies} from '../magic/index.js';
-
+import RedisSession from "telegraf-session-redis";
 import {MyContext} from './my-context.js';
 import {menu} from './menu/index.js';
+import {getTodaySchedules} from "./utils/raspisan.js";
 
 const token = process.env['BOT_TOKEN'];
+
 if (!token) {
 	throw new Error('You have to provide the bot-token from @BotFather via environment variable (BOT_TOKEN)');
 }
 
 const bot = new Telegraf<MyContext>(token);
 
-const localSession = new TelegrafSessionLocal({
-	database: 'persist/sessions.json',
-});
+const session = new RedisSession({
+	store: {
+		host: process.env['TELEGRAM_SESSION_HOST'] || '127.0.0.1',
+		port: process.env['TELEGRAM_SESSION_PORT'] || 6379
+	},
+	getSessionKey: (ctx: MyContext) => {
+		return `schedules_bot`+ctx.chat?.id;
+	}
+})
 
-bot.use(localSession.middleware());
+bot.use(session)
 
 const i18n = new I18n({
 	directory: 'locales',
-	defaultLanguage: 'en',
+	defaultLanguage: 'ru',
 	defaultLanguageOnMissing: true,
 	useSession: true,
 });
@@ -32,27 +37,18 @@ const i18n = new I18n({
 bot.use(i18n.middleware());
 
 if (process.env['NODE_ENV'] !== 'production') {
-	// Show what telegram updates (messages, button clicks, ...) are happening (only in development)
 	bot.use(generateUpdateMiddleware());
 }
 
-bot.command('help', async context => context.reply(context.i18n.t('help')));
+export const menuMiddleware = new MenuMiddleware('/', menu);
 
-bot.command('magic', async context => {
-	const combatResult = fightDragons();
-	const fairyThoughts = danceWithFairies();
+bot.command('start', async context => menuMiddleware.replyToContext(context));
 
-	let text = '';
-	text += combatResult;
-	text += '\n\n';
-	text += fairyThoughts;
-
-	return context.reply(text);
+bot.command('today', async context => {
+	await context.reply(await getTodaySchedules(context));
 });
 
-const menuMiddleware = new MenuMiddleware('/', menu);
-bot.command('start', async context => menuMiddleware.replyToContext(context));
-bot.command('settings', async context => menuMiddleware.replyToContext(context, '/settings/'));
+//bot.command('settings', async context => menuMiddleware.replyToContext(context, '/settings/'));
 bot.use(menuMiddleware.middleware());
 
 bot.catch(error => {
@@ -62,10 +58,8 @@ bot.catch(error => {
 export async function start(): Promise<void> {
 	// The commands you set here will be shown as /commands like /start or /magic in your telegram client.
 	await bot.telegram.setMyCommands([
-		{command: 'start', description: 'open the menu'},
-		{command: 'magic', description: 'do magic'},
-		{command: 'help', description: 'show the help'},
-		{command: 'settings', description: 'open the settings'},
+		{command: 'start', description: 'Меню'},
+		{command: 'today', description: 'Расписание на сегодня'},
 	]);
 
 	await bot.launch();

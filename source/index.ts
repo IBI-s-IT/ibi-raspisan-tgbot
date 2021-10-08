@@ -1,7 +1,14 @@
-import {feedTheDragons} from './magic/index.js';
 import {start as startBot} from './bot/index.js';
+import {createClient} from "redis";
+import { config as envInitialize } from 'dotenv';
 
-feedTheDragons();
+// dotenv initialization
+console.log(envInitialize());
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-startBot();
+// redis initialization
+export const redis_client = createClient();
+
+redis_client.on('error', console.error);
+redis_client.connect().then(() => {
+	startBot().then();
+}).catch(console.error)
