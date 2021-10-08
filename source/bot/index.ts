@@ -48,6 +48,10 @@ bot.command('today', async context => {
 	await context.reply(await getTodaySchedules(context));
 });
 
+bot.command('about', async context => {
+	await context.reply(`Разработан студентом МБИ группы №113. Если что-то сломалось, то пишите - @gbowsky`);
+});
+
 //bot.command('settings', async context => menuMiddleware.replyToContext(context, '/settings/'));
 bot.use(menuMiddleware.middleware());
 
@@ -56,10 +60,10 @@ bot.catch(error => {
 });
 
 export async function start(): Promise<void> {
-	// The commands you set here will be shown as /commands like /start or /magic in your telegram client.
 	await bot.telegram.setMyCommands([
 		{command: 'start', description: 'Меню'},
 		{command: 'today', description: 'Расписание на сегодня'},
+		{command: 'about', description: 'О боте'}
 	]);
 
 	await bot.launch();
