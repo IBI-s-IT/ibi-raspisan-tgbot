@@ -8,13 +8,6 @@ export interface Session {
 }
 
 export interface MyContext extends TelegrafContext {
-	match: [
-		string,
-		string,
-		index: number,
-		input: string,
-		groups: any,
-	];
 	readonly i18n: I18nContext;
 	session: Session;
 }
