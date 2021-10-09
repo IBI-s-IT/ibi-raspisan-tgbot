@@ -10,7 +10,7 @@ interface ScheduleInfo {
 	text?: string;
 }
 
-function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<string> {
+export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<string> {
 	const {group} = ctx.session;
 	const key: any = `schedules_bot:rasp_${date}_${group}`;
 

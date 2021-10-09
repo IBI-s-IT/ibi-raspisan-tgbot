@@ -5,6 +5,7 @@ export interface Session {
 	page?: number;
 	education_level: string;
 	group: string;
+	date?: string;
 }
 
 export interface MyContext extends TelegrafContext {

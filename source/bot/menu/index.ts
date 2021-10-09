@@ -3,6 +3,7 @@ import {MyContext} from '../my-context.js';
 import {settingsMenu} from './settings/index.js';
 import {getTodaySchedules, getTomorrowSchedules} from "../utils/raspisan.js";
 import {backButtons} from "./general.js";
+import {raspisanDaySwitchMenu} from "./raspisanDaySwitch.js";
 
 export const menu = new MenuTemplate<MyContext>(context => context.i18n.t('welcome'));
 
@@ -13,5 +14,8 @@ const tomorrowRaspMenu = new MenuTemplate<MyContext>(async (context) => await ge
 tomorrowRaspMenu.manualRow(backButtons);
 
 menu.submenu(context => '📅 ' + context.i18n.t('menu.today'), 'today_rasp', todayRaspMenu);
-menu.submenu(context => '📅 ' + context.i18n.t('menu.tomorrow'), 'tomorrow_rasp', tomorrowRaspMenu);
+menu.submenu(context => '📅 ' + context.i18n.t('menu.tomorrow'), 'tomorrow_rasp', tomorrowRaspMenu, {
+	joinLastRow: true,
+});
+menu.submenu(context => '📅 ' + context.i18n.t('menu.day_switch'), 'day_switch', raspisanDaySwitchMenu);
 menu.submenu(context => '⚙️ ' + context.i18n.t('menu.settings'), 'settings', settingsMenu);
