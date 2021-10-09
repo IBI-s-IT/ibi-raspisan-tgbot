@@ -18,8 +18,12 @@ selectGroupMenu.select('selectGroup', loadGroups, {
 		context.session.group = key;
 		return '..';
 	},
-	maxRows: 24,
-	columns: 4
+	getCurrentPage: context => context.session.page,
+	setPage: (context, page) => {
+		context.session.page = page
+	},
+	maxRows: 5,
+	columns: 3
 });
 
 selectGroupMenu.manualRow(backButtons);

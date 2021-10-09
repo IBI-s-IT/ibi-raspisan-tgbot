@@ -1,6 +1,6 @@
 import {MyContext} from "../my-context";
 import axios from "axios";
-import { format } from "date-fns";
+import { format, addDays } from "date-fns";
 import * as queryString from "querystring";
 import {JSDOM} from "jsdom";
 import {redis_client} from "../../index.js";
@@ -10,10 +10,8 @@ interface ScheduleInfo {
 	text?: string;
 }
 
-export function getTodaySchedules(ctx: MyContext): Promise<string> {
+function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<string> {
 	const {group} = ctx.session;
-	const today = new Date();
-	const date = format(today, 'dd.MM.yyyy');
 	const key: any = `schedules_bot:rasp_${date}_${group}`;
 
 	return new Promise(resolve => {
@@ -30,11 +28,16 @@ export function getTodaySchedules(ctx: MyContext): Promise<string> {
 		})).then(r => {
 			redis_client.get(key).then((cache) => {
 				if (cache === null) {
-					let text = `Расписание на ${date}\n`;
+					let text = `📅 Расписание на ${date}\n`;
 
 					const tableParser = new JSDOM(r.data);
 					const dates = tableParser.window.document.querySelectorAll("table > tbody > tr > td > b");
 					const texts = tableParser.window.document.querySelectorAll("table > tbody > tr > td[style='border-color: Black;']");
+
+					if (texts.length === 0) {
+						resolve(`📅 На ${date} занятий нет.`)
+						return;
+					}
 
 					let lessons: ScheduleInfo[] = [];
 					let lesson_num = 0;
@@ -63,7 +66,7 @@ export function getTodaySchedules(ctx: MyContext): Promise<string> {
 					})
 
 					redis_client.set(key, text as any, {
-						EX: 3600*6,
+						EX: 3600,
 					} as any).then();
 					console.log('cached_now', key)
 					resolve(text);
@@ -74,6 +77,26 @@ export function getTodaySchedules(ctx: MyContext): Promise<string> {
 			})
 		})
 	});
+}
 
+export function getTodaySchedules(ctx: MyContext): Promise<string> {
+	const today = new Date();
+	const date = format(today, 'dd.MM.yyyy');
 
+	return new Promise<string>(resolve => {
+		getAndParseRaspisanOneDay(ctx, date).then(r => {
+			resolve(r);
+		})
+	})
+}
+
+export function getTomorrowSchedules(ctx: MyContext): Promise<string> {
+	const today = new Date();
+	const date = format(addDays(today, 1), 'dd.MM.yyyy');
+
+	return new Promise<string>(resolve => {
+		getAndParseRaspisanOneDay(ctx, date).then(r => {
+			resolve(r);
+		})
+	})
 }

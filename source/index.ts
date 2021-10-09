@@ -1,9 +1,5 @@
 import {start as startBot} from './bot/index.js';
 import {createClient} from "redis";
-import { config as envInitialize } from 'dotenv';
-
-// dotenv initialization
-console.log(envInitialize());
 
 // redis initialization
 export const redis_client = createClient();

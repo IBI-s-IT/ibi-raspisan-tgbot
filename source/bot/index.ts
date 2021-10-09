@@ -5,7 +5,7 @@ import {Telegraf} from 'telegraf';
 import RedisSession from "telegraf-session-redis";
 import {MyContext} from './my-context.js';
 import {menu} from './menu/index.js';
-import {getTodaySchedules} from "./utils/raspisan.js";
+import {getTodaySchedules, getTomorrowSchedules} from "./utils/raspisan.js";
 
 const token = process.env['BOT_TOKEN'];
 
@@ -48,6 +48,10 @@ bot.command('today', async context => {
 	await context.reply(await getTodaySchedules(context));
 });
 
+bot.command('tomorrow', async context => {
+	await context.reply(await getTomorrowSchedules(context));
+});
+
 bot.command('about', async context => {
 	await context.reply(`Разработан студентом МБИ группы №113. Если что-то сломалось, то пишите - @gbowsky`);
 });
@@ -63,6 +67,7 @@ export async function start(): Promise<void> {
 	await bot.telegram.setMyCommands([
 		{command: 'start', description: 'Меню'},
 		{command: 'today', description: 'Расписание на сегодня'},
+		{command: 'tomorrow', description: 'Расписание на завтра'},
 		{command: 'about', description: 'О боте'}
 	]);
 
