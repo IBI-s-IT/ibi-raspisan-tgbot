@@ -159,10 +159,10 @@ export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<
 					} as any).then();
 					console.log('cached_now', key)
 					resolve(formatTextForTelegram(text));
-				}/* else {
+				} else {
 					console.log('got from cache', key)
 					resolve(formatTextForTelegram(cache));
-				}*/
+				}
 			})
 		})
 	});

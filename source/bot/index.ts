@@ -45,11 +45,17 @@ export const menuMiddleware = new MenuMiddleware('/', menu);
 bot.command('start', async context => menuMiddleware.replyToContext(context));
 
 bot.command('today', async context => {
-	await context.replyWithMarkdownV2(await getTodaySchedules(context));
+	await context.replyWithMarkdownV2(await getTodaySchedules(context), {
+		disable_web_page_preview: true,
+		disable_notification: true,
+	});
 });
 
 bot.command('tomorrow', async context => {
-	await context.replyWithMarkdownV2(await getTomorrowSchedules(context));
+	await context.replyWithMarkdownV2(await getTomorrowSchedules(context), {
+		disable_web_page_preview: true,
+		disable_notification: true,
+	});
 });
 
 bot.command('settings', async context => menuMiddleware.replyToContext(context, '/settings/'));
