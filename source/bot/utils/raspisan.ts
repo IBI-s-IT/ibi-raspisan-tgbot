@@ -4,7 +4,6 @@ import { format, addDays } from "date-fns";
 import * as queryString from "querystring";
 import {JSDOM} from "jsdom";
 import {redis_client} from "../../index.js";
-import {type} from "os";
 
 interface ScheduleInfo {
 	time?: string | null,
