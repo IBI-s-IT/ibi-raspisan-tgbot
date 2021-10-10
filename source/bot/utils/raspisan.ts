@@ -41,10 +41,12 @@ function parseLessonText(lesson_text?: string | string[]): string {
 		 * Примеры:
 		 *
 		 *
-		 * *Практика*, *Онлайн*, Название
+		 * *Практика*, *Онлайн*,
+		 * Название
 		 * ссылка
 		 *
-		 * *Проектная деятельность*, *Офлайн*, Название
+		 * *Проектная деятельность*, *Офлайн*,
+		 * Название
 		*/
 		if (mod_text.includes('--------')) {
 			mod_text = parseLessonText(lesson_text.split('--------'));
@@ -76,7 +78,7 @@ function parseLessonText(lesson_text?: string | string[]): string {
 			}
 			if (mod_text.includes('ОНЛАЙН!')) {
 				mod_text = mod_text.replace(',  ОНЛАЙН!  ', '\n');
-				final_text += `*Онлайн*,\n`;
+				final_text += `*Онлайн*\n`;
 			} else {
 				final_text += `\n`;
 			}

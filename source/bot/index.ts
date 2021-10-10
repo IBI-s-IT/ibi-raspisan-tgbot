@@ -52,6 +52,10 @@ bot.command('tomorrow', async context => {
 	await context.replyWithMarkdownV2(await getTomorrowSchedules(context));
 });
 
+bot.command('settings', async context => menuMiddleware.replyToContext(context, '/settings/'));
+
+bot.command('daily', async context => menuMiddleware.replyToContext(context, '/day_switch/'));
+
 bot.command('about', async context => {
 	await context.reply(`Разработан студентом МБИ группы №113. Если что-то сломалось, то пишите - @gbowsky`);
 });
@@ -67,7 +71,9 @@ export async function start(): Promise<void> {
 		{command: 'start', description: 'Меню'},
 		{command: 'today', description: 'Расписание на сегодня'},
 		{command: 'tomorrow', description: 'Расписание на завтра'},
-		{command: 'about', description: 'О боте'}
+		{command: 'daily', description: 'Расписание по дням'},
+		{command: 'about', description: 'О боте'},
+		{command: 'settings', description: 'Настройки бота'}
 	]);
 
 	await bot.launch();
