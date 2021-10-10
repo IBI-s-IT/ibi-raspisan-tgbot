@@ -11,9 +11,11 @@ interface ScheduleInfo {
 	text?: string;
 }
 
-function cacheCheck(cache: string | null): string {
+function cacheCheck(cache: string | null): string | undefined {
 	if (typeof cache === 'string') {
 		return (cache as string);
+	} else {
+		return undefined;
 	}
 }
 
