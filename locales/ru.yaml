@@ -9,9 +9,12 @@ menu:
   tomorrow: На завтра
   day_switch: Расписание по дням
   group: Выбор группы
+  useful_links: Полезные ссылки
   back: Назад
   main: В главную
   settings: Настройки
+useful_links:
+  body: Полезные ссылки
 edu:
   body: Выбери уровень образования для этого чата
 group:

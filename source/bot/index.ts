@@ -43,25 +43,21 @@ if (process.env['NODE_ENV'] !== 'production') {
 export const menuMiddleware = new MenuMiddleware('/', menu);
 
 bot.command('start', async context => menuMiddleware.replyToContext(context));
-
 bot.command('today', async context => {
 	await context.replyWithMarkdownV2(await getTodaySchedules(context), {
 		disable_web_page_preview: true,
 		disable_notification: true,
 	});
 });
-
 bot.command('tomorrow', async context => {
 	await context.replyWithMarkdownV2(await getTomorrowSchedules(context), {
 		disable_web_page_preview: true,
 		disable_notification: true,
 	});
 });
-
 bot.command('settings', async context => menuMiddleware.replyToContext(context, '/settings/'));
-
 bot.command('daily', async context => menuMiddleware.replyToContext(context, '/day_switch/'));
-
+bot.command('links', async context => menuMiddleware.replyToContext(context, '/useful_links/'));
 bot.command('about', async context => {
 	await context.reply(`Разработан студентом МБИ группы №113. Если что-то сломалось, то пишите - @gbowsky`);
 });
@@ -78,6 +74,7 @@ export async function start(): Promise<void> {
 		{command: 'today', description: 'Расписание на сегодня'},
 		{command: 'tomorrow', description: 'Расписание на завтра'},
 		{command: 'daily', description: 'Расписание по дням'},
+		{command: 'links', description: 'Полезные ссылки'},
 		{command: 'about', description: 'О боте'},
 		{command: 'settings', description: 'Настройки бота'}
 	]);

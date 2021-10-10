@@ -4,6 +4,7 @@ import {settingsMenu} from './settings/index.js';
 import {getTodaySchedules, getTomorrowSchedules} from "../utils/raspisan.js";
 import {backButtons} from "./general.js";
 import {raspisanDaySwitchMenu} from "./raspisanDaySwitch.js";
+import {useful_links} from "./links/usefulLinks.js";
 
 export const menu = new MenuTemplate<MyContext>(context => context.i18n.t('welcome'));
 
@@ -18,4 +19,7 @@ menu.submenu(context => '📅 ' + context.i18n.t('menu.tomorrow'), 'tomorrow_ras
 	joinLastRow: true,
 });
 menu.submenu(context => '📅 ' + context.i18n.t('menu.day_switch'), 'day_switch', raspisanDaySwitchMenu);
+menu.submenu(context => '🔗 ' + context.i18n.t('menu.useful_links'), 'useful_links', useful_links, {
+	joinLastRow: true
+});
 menu.submenu(context => '⚙️ ' + context.i18n.t('menu.settings'), 'settings', settingsMenu);
