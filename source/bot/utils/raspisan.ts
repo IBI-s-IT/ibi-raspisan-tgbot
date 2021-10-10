@@ -10,13 +10,23 @@ interface ScheduleInfo {
 	text?: string;
 }
 
-/*function cacheCheck(cache: string | null): string | undefined {
+function cacheCheck(cache: string | null): string | undefined {
 	if (typeof cache === 'string') {
 		return (cache as string);
 	} else {
 		return undefined;
 	}
-}*/
+}
+
+function formatTextForTelegram (text: string): string {
+	return text.split('.').join('\\.')
+		.split('-').join('\\-')
+		.split('!').join('\\!')
+		.split('=').join('\\=')
+		.split('_').join('\\_')
+		.split('(').join('\\(')
+		.split(')').join('\\)');
+}
 
 function parseLessonText(lesson_text?: string | string[]): string {
 	let final_text: string = '';
@@ -40,26 +50,33 @@ function parseLessonText(lesson_text?: string | string[]): string {
 			mod_text = parseLessonText(lesson_text.split('--------'));
 		} else {
 			if (mod_text.includes('-Прак')) {
-				mod_text.replace('-Прак', '');
+				mod_text = mod_text.replace(' -Прак', '');
 				final_text += '*Практика*, ';
 			}
 			if (mod_text.includes('-Лекц')) {
-				mod_text.replace('-Лекц', '');
+				mod_text = mod_text.replace(' -Лекц', '');
 				final_text += '*Лекция*, ';
 			}
 			if (mod_text.includes('-ПроД')) {
 				let is_sw = false;
 
-				mod_text.replace('-ПроД', '');
-				if (mod_text.includes('СРС!')) {
+				mod_text = mod_text.replace(' -ПроД', '');
+				if (mod_text.includes(',  СРС!')) {
 					is_sw = true;
-					mod_text.replace('CРС!', '');
+					mod_text = mod_text.replace(',  СРС!', '');
 				}
 				final_text += `*Проектная деятельность${is_sw ? ' (СРС)' : ''}*, `;
 			}
+			if (mod_text.includes('БИБЛИОТЕЧНЫЙ ДЕНЬ!  ')) {
+				mod_text = mod_text.replace('БИБЛИОТЕЧНЫЙ ДЕНЬ!  ', '');
+				final_text += `📚 *Библиотечный день*, `;
+			}
+			if (mod_text.includes(', ауд. Дистанцион')) {
+				mod_text = mod_text.replace(', ауд. Дистанцион', '');
+			}
 			if (mod_text.includes('ОНЛАЙН!')) {
-				mod_text.replace(',  ОНЛАЙН!', '');
-				final_text += `*Онлайн*\n`;
+				mod_text = mod_text.replace(',  ОНЛАЙН!  ', '\n');
+				final_text += `*Онлайн*,\n`;
 			} else {
 				final_text += `\n`;
 			}
@@ -75,7 +92,7 @@ function parseLessonText(lesson_text?: string | string[]): string {
 		}
 	}
 
-	return final_text.split('.').join('\\.')
+	return final_text;
 }
 
 export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<string> {
@@ -96,8 +113,7 @@ export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<
 		})).then(r => {
 			redis_client.get(key).then((cache) => {
 				console.log(cache);
-				// cache === null || cacheCheck(cache)?.includes('📅')
-				if (true) {
+				if (cache === null || cacheCheck(cache)?.includes('📅') || process.env['NODE_ENV'] !== 'production') {
 					let text = `📅 Расписание на ${date}\n`;
 
 					const tableParser = new JSDOM(r.data);
@@ -140,10 +156,10 @@ export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<
 						EX: 3600,
 					} as any).then();
 					console.log('cached_now', key)
-					resolve(text);
+					resolve(formatTextForTelegram(text));
 				}/* else {
 					console.log('got from cache', key)
-					resolve(cache);
+					resolve(formatTextForTelegram(cache));
 				}*/
 			})
 		})

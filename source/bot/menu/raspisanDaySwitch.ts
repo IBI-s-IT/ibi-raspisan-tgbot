@@ -5,10 +5,15 @@ import {backButtons} from "./general.js";
 import {getAndParseRaspisanOneDay} from "../utils/raspisan.js";
 
 const day_format = 'dd.MM.yyyy';
-export const raspisanDaySwitchMenu = new MenuTemplate<MyContext>(async ctx =>
-	typeof ctx.session.date === 'string' ?
-		await getAndParseRaspisanOneDay(ctx, ctx.session.date as string) :
-		await getAndParseRaspisanOneDay(ctx, format(new Date, day_format))
+export const raspisanDaySwitchMenu = new MenuTemplate<MyContext>(async (ctx) => {
+		if (typeof ctx.session.date === 'string') {
+			let data = await getAndParseRaspisanOneDay(ctx, ctx.session.date as string);
+			return {text: data, parse_mode: 'MarkdownV2', disable_web_page_preview: true};
+		} else {
+			let data = await getAndParseRaspisanOneDay(ctx, format(new Date, day_format));
+			return {text: data, parse_mode: 'MarkdownV2', disable_web_page_preview: true};
+		}
+	}
 );
 
 raspisanDaySwitchMenu.interact('⬅️', 'daily_back', {
