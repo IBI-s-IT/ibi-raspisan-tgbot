@@ -10,6 +10,14 @@ interface ScheduleInfo {
 	text?: string;
 }
 
+/*function cacheCheck(cache: string | null): string | undefined {
+	if (typeof cache === 'string') {
+		return (cache as string);
+	} else {
+		return undefined;
+	}
+}*/
+
 function parseLessonText(lesson_text?: string | string[]): string {
 	let final_text: string = '';
 
@@ -88,7 +96,7 @@ export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<
 		})).then(r => {
 			redis_client.get(key).then((cache) => {
 				console.log(cache);
-				// cache === null || cache === '📅 На 11.10.2021 занятий нет.'
+				// cache === null || cacheCheck(cache)?.includes('📅')
 				if (true) {
 					let text = `📅 Расписание на ${date}\n`;
 
@@ -98,7 +106,7 @@ export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<
 					const texts = tableParser.window.document.querySelectorAll("table > tbody > tr > td[style='border-color: Black;']");
 
 					if (texts.length === 0) {
-						resolve(`📅 На ${date.split('.').join('\\.')} занятий нет\\.`)
+						resolve(`📅 На ${date.split('.').join('\\.')} занятий нет\\.\n\nТакже есть вероятность что сайт упал или обновляются базы\\.`)
 						return;
 					}
 
