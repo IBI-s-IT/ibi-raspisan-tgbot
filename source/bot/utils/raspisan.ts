@@ -27,7 +27,7 @@ export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<
 			tuttabl: 0
 		})).then(r => {
 			redis_client.get(key).then((cache) => {
-				if (cache === null) {
+				if (cache === null || (cache as string).includes('📅')) {
 					let text = `📅 Расписание на ${date}\n`;
 
 					const tableParser = new JSDOM(r.data);
@@ -35,7 +35,7 @@ export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<
 					const texts = tableParser.window.document.querySelectorAll("table > tbody > tr > td[style='border-color: Black;']");
 
 					if (texts.length === 0) {
-						resolve(`📅 На ${date} занятий нет.`)
+						resolve(`📅 На ${date} занятий нет.\n\nТакже есть вероятность что сайт упал или обновляются базы.`)
 						return;
 					}
 
