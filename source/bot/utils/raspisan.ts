@@ -4,10 +4,17 @@ import { format, addDays } from "date-fns";
 import * as queryString from "querystring";
 import {JSDOM} from "jsdom";
 import {redis_client} from "../../index.js";
+import {type} from "os";
 
 interface ScheduleInfo {
 	time?: string | null,
 	text?: string;
+}
+
+function cacheCheck(cache: string | null): string {
+	if (typeof cache === 'string') {
+		return (cache as string);
+	}
 }
 
 export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<string> {
@@ -27,7 +34,7 @@ export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<
 			tuttabl: 0
 		})).then(r => {
 			redis_client.get(key).then((cache) => {
-				if (cache === null || (cache as string).includes('📅')) {
+				if (cache === null || cacheCheck(cache)?.includes('📅') ) {
 					let text = `📅 Расписание на ${date}\n`;
 
 					const tableParser = new JSDOM(r.data);
