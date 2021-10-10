@@ -18,6 +18,83 @@ function cacheCheck(cache: string | null): string | undefined {
 	}
 }
 
+function formatTextForTelegram (text: string): string {
+	return text.split('.').join('\\.')
+		.split('-').join('\\-')
+		.split('!').join('\\!')
+		.split('=').join('\\=')
+		.split('_').join('\\_')
+		.split('(').join('\\(')
+		.split(')').join('\\)');
+}
+
+function parseLessonText(lesson_text?: string | string[]): string {
+	let final_text: string = '';
+
+	if (lesson_text === '' || typeof lesson_text === 'undefined') {
+		final_text = 'Окно, отдыхай ✨';
+	} else if (typeof lesson_text === 'string') {
+		let mod_text = lesson_text;
+
+		/**
+		 * Заголовок текста урока
+		 * Примеры:
+		 *
+		 *
+		 * *Практика*, *Онлайн*, Название
+		 * ссылка
+		 *
+		 * *Проектная деятельность*, *Офлайн*, Название
+		*/
+		if (mod_text.includes('--------')) {
+			mod_text = parseLessonText(lesson_text.split('--------'));
+		} else {
+			if (mod_text.includes('-Прак')) {
+				mod_text = mod_text.replace(' -Прак', '');
+				final_text += '*Практика*, ';
+			}
+			if (mod_text.includes('-Лекц')) {
+				mod_text = mod_text.replace(' -Лекц', '');
+				final_text += '*Лекция*, ';
+			}
+			if (mod_text.includes('-ПроД')) {
+				let is_sw = false;
+
+				mod_text = mod_text.replace(' -ПроД', '');
+				if (mod_text.includes(',  СРС!')) {
+					is_sw = true;
+					mod_text = mod_text.replace(',  СРС!', '');
+				}
+				final_text += `*Проектная деятельность${is_sw ? ' (СРС)' : ''}*, `;
+			}
+			if (mod_text.includes('БИБЛИОТЕЧНЫЙ ДЕНЬ!  ')) {
+				mod_text = mod_text.replace('БИБЛИОТЕЧНЫЙ ДЕНЬ!  ', '');
+				final_text += `📚 *Библиотечный день*, `;
+			}
+			if (mod_text.includes(', ауд. Дистанцион')) {
+				mod_text = mod_text.replace(', ауд. Дистанцион', '');
+			}
+			if (mod_text.includes('ОНЛАЙН!')) {
+				mod_text = mod_text.replace(',  ОНЛАЙН!  ', '\n');
+				final_text += `*Онлайн*,\n`;
+			} else {
+				final_text += `\n`;
+			}
+		}
+
+		final_text += mod_text;
+	} else {
+		// Array likely
+		if (Array.isArray(lesson_text)) {
+			lesson_text.map(text => {
+				final_text += `${parseLessonText(text)}\n`;
+			})
+		}
+	}
+
+	return final_text;
+}
+
 export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<string> {
 	const {group} = ctx.session;
 	const key: any = `schedules_bot:rasp_${date}_${group}`;
@@ -35,15 +112,17 @@ export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<
 			tuttabl: 0
 		})).then(r => {
 			redis_client.get(key).then((cache) => {
-				if (cache === null || cacheCheck(cache)?.includes('📅') ) {
+				console.log(cache);
+				if (cache === null || cacheCheck(cache)?.includes('📅') || process.env['NODE_ENV'] !== 'production') {
 					let text = `📅 Расписание на ${date}\n`;
 
 					const tableParser = new JSDOM(r.data);
+
 					const dates = tableParser.window.document.querySelectorAll("table > tbody > tr > td > b");
 					const texts = tableParser.window.document.querySelectorAll("table > tbody > tr > td[style='border-color: Black;']");
 
 					if (texts.length === 0) {
-						resolve(`📅 На ${date} занятий нет.\n\nТакже есть вероятность что сайт упал или обновляются базы.`)
+						resolve(`📅 На ${date.split('.').join('\\.')} занятий нет\\.\n\nТакже есть вероятность что сайт упал или обновляются базы\\.`)
 						return;
 					}
 
@@ -62,7 +141,7 @@ export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<
 						if (texts[i]?.textContent !== null) {
 							lessons[lesson_num] = {
 								...lessons[lesson_num],
-								text: texts[i]?.textContent?.trim(),
+								text: parseLessonText(texts[i]?.textContent?.trim()),
 							}
 
 							lesson_num++;
@@ -77,11 +156,11 @@ export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<
 						EX: 3600,
 					} as any).then();
 					console.log('cached_now', key)
-					resolve(text);
-				} else {
+					resolve(formatTextForTelegram(text));
+				}/* else {
 					console.log('got from cache', key)
-					resolve(cache);
-				}
+					resolve(formatTextForTelegram(cache));
+				}*/
 			})
 		})
 	});
