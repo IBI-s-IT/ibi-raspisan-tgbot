@@ -45,18 +45,17 @@ export const menuMiddleware = new MenuMiddleware('/', menu);
 bot.command('start', async context => menuMiddleware.replyToContext(context));
 
 bot.command('today', async context => {
-	await context.reply(await getTodaySchedules(context));
+	await context.replyWithMarkdownV2(await getTodaySchedules(context));
 });
 
 bot.command('tomorrow', async context => {
-	await context.reply(await getTomorrowSchedules(context));
+	await context.replyWithMarkdownV2(await getTomorrowSchedules(context));
 });
 
 bot.command('about', async context => {
 	await context.reply(`Разработан студентом МБИ группы №113. Если что-то сломалось, то пишите - @gbowsky`);
 });
 
-//bot.command('settings', async context => menuMiddleware.replyToContext(context, '/settings/'));
 bot.use(menuMiddleware.middleware());
 
 bot.catch(error => {

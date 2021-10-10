@@ -19,7 +19,8 @@ raspisanDaySwitchMenu.interact('⬅️', 'daily_back', {
 			ctx.session.date = format(subDays(parse(ctx.session.date, day_format, new Date()), 1), day_format);
 		}
 		return true;
-	}
+	},
+
 })
 
 raspisanDaySwitchMenu.interact('Сегодня', 'daily_today', {
