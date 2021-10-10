@@ -8,10 +8,20 @@ import {useful_links} from "./links/usefulLinks.js";
 
 export const menu = new MenuTemplate<MyContext>(context => context.i18n.t('welcome'));
 
-const todayRaspMenu = new MenuTemplate<MyContext>(async (context) => await getTodaySchedules(context));
+const todayRaspMenu = new MenuTemplate<MyContext>(async (context) => {
+	return {
+		text: await getTodaySchedules(context),
+		parse_mode: 'MarkdownV2',
+	}
+});
 todayRaspMenu.manualRow(backButtons);
 
-const tomorrowRaspMenu = new MenuTemplate<MyContext>(async (context) => await getTomorrowSchedules(context));
+const tomorrowRaspMenu = new MenuTemplate<MyContext>(async (context) => {
+	return {
+		text: await getTomorrowSchedules(context),
+		parse_mode: 'MarkdownV2',
+	}
+});
 tomorrowRaspMenu.manualRow(backButtons);
 
 menu.submenu(context => '📅 ' + context.i18n.t('menu.today'), 'today_rasp', todayRaspMenu);
