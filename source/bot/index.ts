@@ -6,6 +6,7 @@ import RedisSession from "telegraf-session-redis";
 import {MyContext} from './my-context.js';
 import {menu} from './menu/index.js';
 import {getTodaySchedules, getTomorrowSchedules} from "./utils/raspisan.js";
+import {redis_client} from "../index.js";
 
 const token = process.env['BOT_TOKEN'];
 
@@ -66,6 +67,19 @@ bot.use(menuMiddleware.middleware());
 
 bot.catch(error => {
 	console.error('telegraf error occured', error);
+});
+
+/*
+* Statistics
+* */
+bot.on('message', () => {
+	redis_client.get('stat:msg').then((stat_msg) => {
+		if (stat_msg === null) {
+			redis_client.set('stat:msg', '1');
+		} else {
+			redis_client.set('stat:msg', (parseInt(stat_msg) as number + 1).toString());
+		}
+	})
 });
 
 export async function start(): Promise<void> {
