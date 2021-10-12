@@ -1,8 +1,8 @@
 import {MenuTemplate} from 'telegraf-inline-menu';
-import {backButtons} from '../general.js';
-import {MyContext} from '../../my-context.js';
+import {backButtons} from '../../general.js';
+import {MyContext} from '../../../my-context.js';
 
-export const educationLevelMenu = new MenuTemplate<MyContext>(context => context.i18n.t('edu.body'));
+export const education_level_select_menu = new MenuTemplate<MyContext>(context => context.i18n.t('edu.body'));
 
 const education_levels = {
 	'1': 'Бакалавриат',
@@ -12,7 +12,7 @@ const education_levels = {
 	'5': 'ДПО',
 };
 
-educationLevelMenu.select('setEduLevel', education_levels, {
+education_level_select_menu.select('setEduLevel', education_levels, {
 	isSet: (ctx, key) => ctx.session.education_level === key,
 	set: (context, key) => {
 		context.session.education_level = key;
@@ -21,4 +21,4 @@ educationLevelMenu.select('setEduLevel', education_levels, {
 	columns: 2,
 });
 
-educationLevelMenu.manualRow(backButtons);
+education_level_select_menu.manualRow(backButtons);

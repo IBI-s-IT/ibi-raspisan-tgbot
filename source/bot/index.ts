@@ -83,14 +83,37 @@ bot.on('message', () => {
 });
 
 export async function start(): Promise<void> {
+	const language_code = 'ru';
+
 	await bot.telegram.setMyCommands([
-		{command: 'start', description: 'Меню'},
-		{command: 'today', description: 'Расписание на сегодня'},
-		{command: 'tomorrow', description: 'Расписание на завтра'},
-		{command: 'daily', description: 'Расписание по дням'},
-		{command: 'links', description: 'Полезные ссылки'},
-		{command: 'about', description: 'О боте'},
-		{command: 'settings', description: 'Настройки бота'}
+		{
+			command: 'start',
+			description: i18n.t(language_code, 'commands.start')
+		},
+		{
+			command: 'today',
+			description: i18n.t(language_code, 'commands.today')
+		},
+		{
+			command: 'tomorrow',
+			description: i18n.t(language_code, 'commands.tomorrow')
+		},
+		{
+			command: 'daily',
+			description: i18n.t(language_code, 'commands.daily')
+		},
+		{
+			command: 'links',
+			description: i18n.t(language_code, 'commands.links')
+		},
+		{
+			command: 'about',
+			description: i18n.t(language_code, 'commands.about')
+		},
+		{
+			command: 'settings',
+			description: i18n.t(language_code, 'commands.settings')
+		}
 	]);
 
 	await bot.launch();

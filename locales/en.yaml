@@ -1,0 +1,36 @@
+welcome: >
+  Hi, ${from.first_name}! 👋
+
+
+  If you're just added this bot into your group's chat, or just started using this bot, please visit settings menu.
+menu:
+  today: Today
+  tomorrow: Tomorrow
+  day_switch: Daily schedules
+  group: Select group
+  useful_links: Useful links
+  back: Go back
+  main: Main menu
+  settings: Settings
+useful_links:
+  body: Here's some useful links for IBI
+  site: IBI website
+  schedules: Schedules
+  lms: UOES
+  lib: Online library
+  contacts: Contacts
+edu:
+  body: Select educational level
+group:
+  body: Select group for this chat
+settings:
+  body: >
+    Settings
+
+    You should select your educational level, and then your group.
+  group_set:
+    Change group
+  edu_level:
+    Change educational level
+  lang_select:
+    Change language

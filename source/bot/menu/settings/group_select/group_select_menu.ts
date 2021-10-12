@@ -1,9 +1,9 @@
 import {MenuTemplate} from 'telegraf-inline-menu';
-import {backButtons} from '../general.js';
-import {MyContext} from '../../my-context.js';
-import {getCachedGroupList} from "../../utils/groups.js";
+import {backButtons} from '../../general.js';
+import {MyContext} from '../../../my-context.js';
+import {getCachedGroupList} from "../../../utils/groups.js";
 
-export const selectGroupMenu = new MenuTemplate<MyContext>(context => context.i18n.t('group.body'));
+export const group_select_menu = new MenuTemplate<MyContext>(context => context.i18n.t('group.body'));
 
 async function loadGroups(ctx: MyContext) {
 	let groups: Record<string, string> = {};
@@ -12,7 +12,7 @@ async function loadGroups(ctx: MyContext) {
 	return groups;
 }
 
-selectGroupMenu.select('selectGroup', loadGroups, {
+group_select_menu.select('selectGroup', loadGroups, {
 	isSet: (context, key) => context.session.group === key,
 	set: (context, key) => {
 		context.session.group = key;
@@ -26,4 +26,4 @@ selectGroupMenu.select('selectGroup', loadGroups, {
 	columns: 3
 });
 
-selectGroupMenu.manualRow(backButtons);
+group_select_menu.manualRow(backButtons);

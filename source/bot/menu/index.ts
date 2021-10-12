@@ -3,8 +3,8 @@ import {MyContext} from '../my-context.js';
 import {settingsMenu} from './settings/index.js';
 import {getTodaySchedules, getTomorrowSchedules} from "../utils/raspisan.js";
 import {backButtons} from "./general.js";
-import {raspisanDaySwitchMenu} from "./raspisanDaySwitch.js";
-import {useful_links} from "./links/usefulLinks.js";
+import {raspisanDaySwitchMenu} from "./daily_schedules/daily_schedules_menu.js";
+import {useful_links} from "./links/index.js";
 
 export const menu = new MenuTemplate<MyContext>(context => context.i18n.t('welcome'));
 

@@ -1,8 +1,8 @@
 import {MenuTemplate} from 'telegraf-inline-menu';
-import {MyContext} from '../my-context.js';
+import {MyContext} from '../../my-context.js';
 import { parse, format, subDays, addDays } from 'date-fns';
-import {backButtons} from "./general.js";
-import {getAndParseRaspisanOneDay} from "../utils/raspisan.js";
+import {backButtons} from "../general.js";
+import {getAndParseRaspisanOneDay} from "../../utils/raspisan.js";
 
 const day_format = 'dd.MM.yyyy';
 export const raspisanDaySwitchMenu = new MenuTemplate<MyContext>(async (ctx) => {
