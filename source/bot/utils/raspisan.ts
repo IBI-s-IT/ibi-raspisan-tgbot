@@ -115,7 +115,7 @@ export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<
 		})).then(r => {
 			redis_client.get(key).then((cache) => {
 				console.log(cache);
-				if (cache === null || cacheCheck(cache)?.includes('📅')) {
+				if (cache === null || cacheCheck(cache)?.includes('⛔️')) {
 					let text = `📅 Расписание на ${date}\n`;
 
 					const tableParser = new JSDOM(r.data);
