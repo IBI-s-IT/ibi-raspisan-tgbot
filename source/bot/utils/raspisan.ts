@@ -124,7 +124,7 @@ export function getAndParseRaspisanOneDay(ctx: MyContext, date: string):Promise<
 					const texts = tableParser.window.document.querySelectorAll("table > tbody > tr > td[style='border-color: Black;']");
 
 					if (texts.length === 0) {
-						resolve(`📅 На ${date.split('.').join('\\.')} занятий нет\\.\n\nТакже есть вероятность что сайт упал или обновляются базы\\.`)
+						resolve(`⛔️ На ${date.split('.').join('\\.')} занятий нет\\.\n\nТакже есть вероятность что сайт упал или обновляются базы\\.`)
 						return;
 					}
 
