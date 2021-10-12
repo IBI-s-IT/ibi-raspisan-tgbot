@@ -3,6 +3,10 @@ welcome: >
 
 
   If you're just added this bot into your group's chat, or just started using this bot, please visit settings menu.
+about:
+  Developed by IBI student from group №113 —
+
+  @gbowsky
 menu:
   today: Today
   tomorrow: Tomorrow

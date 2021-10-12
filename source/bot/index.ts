@@ -60,7 +60,7 @@ bot.command('settings', async context => menuMiddleware.replyToContext(context, 
 bot.command('daily', async context => menuMiddleware.replyToContext(context, '/day_switch/'));
 bot.command('links', async context => menuMiddleware.replyToContext(context, '/useful_links/'));
 bot.command('about', async context => {
-	await context.reply(`Разработан студентом МБИ группы №113. Если что-то сломалось, то пишите - @gbowsky`);
+	await context.reply(context.i18n.t('about'));
 });
 
 bot.use(menuMiddleware.middleware());
