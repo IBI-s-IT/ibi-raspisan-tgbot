@@ -21,6 +21,7 @@ function cacheCheck(cache: string | null): string | undefined {
 function formatTextForTelegram (text: string): string {
 	return text.split('.').join('\\.')
 		.split('-').join('\\-')
+                .split('+').join('\\+')
 		.split('!').join('\\!')
 		.split('=').join('\\=')
 		.split('_').join('\\_')
